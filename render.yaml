@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: autoworker
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt && playwright install chromium
+    startCommand: python run.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: BROWSER_HEADLESS
+        value: "true"
+      - key: MOCK_APP_URL
+        value: "http://localhost:5001"
