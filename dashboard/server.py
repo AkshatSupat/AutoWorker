@@ -1101,6 +1101,15 @@ async def reject_human_loop(task_id: str, action: Optional[ApprovalAction] = Non
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 app.mount("/screenshots", StaticFiles(directory=str(SCREENSHOT_PATH)), name="screenshots")
 
+# Mount CorpFlow ERP Mock Portal directly so it is accessible on the dashboard host
+try:
+    from starlette.middleware.wsgi import WSGIMiddleware
+    from mock_company_app.app import app as corpflow_flask_app
+    app.mount("/portal", WSGIMiddleware(corpflow_flask_app))
+    logger.info("Mounted CorpFlow ERP Portal at /portal")
+except Exception as e:
+    logger.warning(f"Could not mount CorpFlow WSGI app: {e}")
+
 
 if __name__ == "__main__":
     import uvicorn

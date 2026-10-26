@@ -1,6 +1,7 @@
 services:
+  # 1. AutoWorker AI Agent Dashboard
   - type: web
-    name: autoworker
+    name: autoworker-dashboard
     env: python
     region: oregon
     plan: free
@@ -13,3 +14,17 @@ services:
         value: "true"
       - key: MOCK_APP_URL
         value: "http://localhost:5001"
+
+  # 2. CorpFlow ERP Mock Portal
+  - type: web
+    name: corpflow-erp-portal
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m mock_company_app.app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: FLASK_SECRET_KEY
+        generateValue: true

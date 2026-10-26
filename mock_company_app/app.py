@@ -265,12 +265,13 @@ def page_not_found(e):
 
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5001))
     print("=" * 60)
-    print(" Starting CorpFlow Portal Mock Application on port 5001...")
-    print(" Dashboard URL:      http://localhost:5001/")
-    print(" Invoices URL:       http://localhost:5001/invoices")
-    print(" Data Entry URL:     http://localhost:5001/internal/data-entry")
-    print(" Submissions URL:    http://localhost:5001/internal/submissions")
-    print(" Submissions API:    http://localhost:5001/api/submissions")
+    print(f" Starting CorpFlow Portal Mock Application on port {port}...")
+    print(f" Dashboard URL:      http://0.0.0.0:{port}/")
+    print(f" Invoices URL:       http://0.0.0.0:{port}/invoices")
+    print(f" Data Entry URL:     http://0.0.0.0:{port}/internal/data-entry")
+    print(f" Submissions URL:    http://0.0.0.0:{port}/internal/submissions")
+    print(f" Submissions API:    http://0.0.0.0:{port}/api/submissions")
     print("=" * 60)
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=False)
