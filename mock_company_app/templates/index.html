@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Welcome Banner -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card p-4 border-0" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid #334155 !important;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <span class="badge bg-primary mb-2 px-3 py-1" style="font-size: 0.8rem; letter-spacing: 0.5px;">FINANCIAL OPERATIONS</span>
+                    <h2 class="fw-bold mb-1" id="portal-title">CorpFlow Enterprise Operations</h2>
+                    <p class="text-secondary mb-0">Unified financial ledger, invoice reconciliation, and internal data entry management.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="/invoices" id="action-view-invoices" class="btn btn-outline-primary">
+                        <i class="bi bi-receipt me-1"></i> View Invoices
+                    </a>
+                    <a href="/internal/data-entry" id="action-data-entry" class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-1"></i> Data Entry Form
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Key Metrics Row -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card" id="stat-total-invoices">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-secondary small fw-bold text-uppercase">Total Invoices</div>
+                    <div class="h3 fw-bold mt-2 mb-0" id="total-invoices-count">{{ total_invoices }}</div>
+                </div>
+                <div class="stat-icon" style="background-color: rgba(56, 189, 248, 0.1); color: #38bdf8;">
+                    <i class="bi bi-file-earmark-text"></i>
+                </div>
+            </div>
+            <div class="mt-3 small text-secondary">
+                <span class="text-info"><i class="bi bi-info-circle me-1"></i>Live catalog</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card" id="stat-pending-invoices">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-secondary small fw-bold text-uppercase">Pending Invoices</div>
+                    <div class="h3 fw-bold mt-2 mb-0 text-warning" id="pending-invoices-count">{{ pending_count }}</div>
+                </div>
+                <div class="stat-icon" style="background-color: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+            </div>
+            <div class="mt-3 small text-secondary">
+                <span>Requires processing</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card" id="stat-overdue-invoices">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-secondary small fw-bold text-uppercase">Overdue Invoices</div>
+                    <div class="h3 fw-bold mt-2 mb-0 text-danger" id="overdue-invoices-count">{{ overdue_count }}</div>
+                </div>
+                <div class="stat-icon" style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+            </div>
+            <div class="mt-3 small text-secondary">
+                <span>Immediate review required</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card" id="stat-submissions">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-secondary small fw-bold text-uppercase">Internal Submissions</div>
+                    <div class="h3 fw-bold mt-2 mb-0 text-success" id="total-submissions-count">{{ total_submissions }}</div>
+                </div>
+                <div class="stat-icon" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981;">
+                    <i class="bi bi-check2-circle"></i>
+                </div>
+            </div>
+            <div class="mt-3 small text-secondary">
+                <a href="/internal/submissions" id="action-view-submissions" class="text-decoration-none text-success">
+                    View audit trail <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Workflow Section -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-lightning-charge me-2 text-warning"></i>Automation Workflow Pipeline</h5>
+                <span class="badge bg-secondary">Internal Integration</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="p-3 rounded" style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid #1e293b;">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-primary rounded-circle">1</span>
+                                <h6 class="mb-0 fw-semibold">Extract Invoices</h6>
+                            </div>
+                            <p class="text-secondary small mb-3">Navigate to the Invoices list or detail page to extract invoice details and amounts.</p>
+                            <a href="/invoices" class="btn btn-sm btn-outline-light w-100">Go to Invoices</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 rounded" style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid #1e293b;">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-primary rounded-circle">2</span>
+                                <h6 class="mb-0 fw-semibold">Enter Records</h6>
+                            </div>
+                            <p class="text-secondary small mb-3">Input extracted invoice data into the Internal Data Entry system form.</p>
+                            <a href="/internal/data-entry" class="btn btn-sm btn-outline-light w-100">Open Data Entry</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 rounded" style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid #1e293b;">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-primary rounded-circle">3</span>
+                                <h6 class="mb-0 fw-semibold">Verify Audit</h6>
+                            </div>
+                            <p class="text-secondary small mb-3">Check the submissions ledger or query the JSON API endpoint for verification.</p>
+                            <a href="/internal/submissions" class="btn btn-sm btn-outline-light w-100">Audit Entries</a>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4" style="border-color: #1e293b;">
+
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h6 class="mb-1 fw-bold">Automated Verification API</h6>
+                        <p class="text-secondary small mb-0">AI agents can query <code>/api/submissions</code> programmatically.</p>
+                    </div>
+                    <a href="/api/submissions" target="_blank" class="btn btn-sm btn-outline-info" id="btn-api-submissions">
+                        <i class="bi bi-braces me-1"></i> GET /api/submissions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-info-circle me-2 text-info"></i>System Specs</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush bg-transparent">
+                    <li class="list-group-item bg-transparent text-secondary px-0 d-flex justify-content-between">
+                        <span>Host Port:</span>
+                        <span class="text-white fw-bold">5001</span>
+                    </li>
+                    <li class="list-group-item bg-transparent text-secondary px-0 d-flex justify-content-between">
+                        <span>Environment:</span>
+                        <span class="text-white">Mock Production</span>
+                    </li>
+                    <li class="list-group-item bg-transparent text-secondary px-0 d-flex justify-content-between">
+                        <span>Data Storage:</span>
+                        <span class="text-white">JSON Datastore</span>
+                    </li>
+                    <li class="list-group-item bg-transparent text-secondary px-0 d-flex justify-content-between">
+                        <span>Automation Selectors:</span>
+                        <span class="badge bg-success">Semantic IDs Enabled</span>
+                    </li>
+                    <li class="list-group-item bg-transparent text-secondary px-0 d-flex justify-content-between">
+                        <span>Supported Currencies:</span>
+                        <span class="text-white">USD ($), INR (₹)</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

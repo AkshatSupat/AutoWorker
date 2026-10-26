@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Invoice {{ invoice.invoice_number }}{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/invoices" class="text-decoration-none text-secondary">Invoices</a></li>
+        <li class="breadcrumb-item active text-info" aria-current="page">{{ invoice.invoice_number }}</li>
+    </ol>
+</nav>
+
+<!-- Page Header -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <h2 class="fw-bold mb-0" id="invoice-header-title">Invoice #{{ invoice.invoice_number }}</h2>
+            {% if invoice.status == 'Paid' %}
+                <span class="badge-paid ms-2" id="invoice-status"><i class="bi bi-check-circle-fill me-1"></i>Paid</span>
+            {% elif invoice.status == 'Pending' %}
+                <span class="badge-pending ms-2" id="invoice-status"><i class="bi bi-clock-fill me-1"></i>Pending</span>
+            {% elif invoice.status == 'Overdue' %}
+                <span class="badge-overdue ms-2" id="invoice-status"><i class="bi bi-exclamation-circle-fill me-1"></i>Overdue</span>
+            {% else %}
+                <span class="badge bg-secondary ms-2" id="invoice-status">{{ invoice.status }}</span>
+            {% endif %}
+        </div>
+        <p class="text-secondary mb-0">Record ID: #<span id="invoice-id">{{ invoice.id }}</span> &bull; Issued for <span class="text-white fw-semibold">{{ invoice.company_name }}</span></p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/invoices" id="back-to-invoices-btn" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back to Invoices
+        </a>
+        <a href="/internal/data-entry?company_name={{ invoice.company_name|urlencode }}&invoice_number={{ invoice.invoice_number|urlencode }}&amount={{ invoice.amount }}&due_date={{ invoice.due_date }}&currency={{ invoice.currency }}&notes={{ invoice.description|urlencode }}" id="copy-to-internal-btn" class="btn btn-primary">
+            <i class="bi bi-pencil-square me-1"></i> Enter into Internal System
+        </a>
+    </div>
+</div>
+
+<!-- Invoice Card Container -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4" id="invoice-detail-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-secondary text-uppercase small"><i class="bi bi-file-earmark-text me-1"></i>Invoice Summary Details</span>
+                <span class="text-secondary small">Ledger Verified</span>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-4 mb-4">
+                    <div class="col-sm-6">
+                        <div class="text-secondary small text-uppercase fw-semibold mb-1">Company Name</div>
+                        <div class="h5 fw-bold text-white mb-0" id="invoice-company">{{ invoice.company_name }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-secondary small text-uppercase fw-semibold mb-1">Invoice Number</div>
+                        <div class="h5 fw-bold text-info mb-0" id="invoice-number">{{ invoice.invoice_number }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-secondary small text-uppercase fw-semibold mb-1">Total Amount</div>
+                        <div class="h4 fw-bold text-success mb-0" id="invoice-amount">{{ "{:,.2f}".format(invoice.amount) }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-secondary small text-uppercase fw-semibold mb-1">Currency</div>
+                        <div class="h5 fw-bold text-white mb-0" id="invoice-currency">{{ invoice.currency }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-secondary small text-uppercase fw-semibold mb-1">Payment Due Date</div>
+                        <div class="h5 fw-bold text-warning mb-0" id="invoice-due-date">{{ invoice.due_date }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-secondary small text-uppercase fw-semibold mb-1">Status Code</div>
+                        <div class="h5 fw-semibold text-white mb-0" id="invoice-status-label">{{ invoice.status }}</div>
+                    </div>
+                </div>
+
+                <hr style="border-color: #1e293b;">
+
+                <div>
+                    <div class="text-secondary small text-uppercase fw-semibold mb-2">Scope of Work &amp; Description</div>
+                    <div class="p-3 rounded bg-dark border border-secondary text-light" id="invoice-description">
+                        {{ invoice.description }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar with Quick Actions & Automation Tips -->
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-robot me-2 text-info"></i>Agent Automation Info</h6>
+            </div>
+            <div class="card-body">
+                <p class="small text-secondary mb-3">
+                    This invoice can be recorded into the internal system automatically. The fields below are mapped directly to DOM elements with explicit selectors:
+                </p>
+                <div class="bg-dark p-2 rounded mb-3 font-monospace small text-secondary">
+                    <div>#invoice-company</div>
+                    <div>#invoice-number</div>
+                    <div>#invoice-amount</div>
+                    <div>#invoice-due-date</div>
+                    <div>#invoice-description</div>
+                </div>
+                <a href="/internal/data-entry?company_name={{ invoice.company_name|urlencode }}&invoice_number={{ invoice.invoice_number|urlencode }}&amount={{ invoice.amount }}&due_date={{ invoice.due_date }}&currency={{ invoice.currency }}&notes={{ invoice.description|urlencode }}" id="agent-populate-btn" class="btn btn-primary w-100 mb-2">
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Transfer to Form
+                </a>
+                <a href="/invoices" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-list me-1"></i> View All Invoices
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Invoices{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <div>
+        <h2 class="fw-bold mb-1" id="invoices-page-title">Company Invoices</h2>
+        <p class="text-secondary mb-0">Browse and inspect accounts receivable and payable records.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/internal/data-entry" id="create-entry-from-invoices" class="btn btn-primary">
+            <i class="bi bi-pencil-square me-1"></i> Go to Data Entry
+        </a>
+    </div>
+</div>
+
+<!-- Search and Filter Bar -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-dark border-secondary text-secondary">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" id="invoice-search-input" class="form-control" placeholder="Search by company or invoice #..." onkeyup="filterInvoices()">
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <select id="invoice-status-filter" class="form-select" onchange="filterInvoices()">
+                    <option value="ALL">All Statuses</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="PAID">Paid</option>
+                    <option value="OVERDUE">Overdue</option>
+                </select>
+            </div>
+            <div class="col-md-2 col-lg-4 text-md-end text-secondary small">
+                Showing <span id="visible-invoice-count" class="fw-bold text-white">{{ invoices|length }}</span> of <span id="total-invoice-count" class="fw-bold text-white">{{ invoices|length }}</span> invoices
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Invoices Table -->
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-custom table-hover mb-0" id="invoice-table">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 25%;">Company</th>
+                    <th scope="col" style="width: 18%;">Invoice #</th>
+                    <th scope="col" style="width: 17%;">Amount</th>
+                    <th scope="col" style="width: 15%;">Due Date</th>
+                    <th scope="col" style="width: 12%;">Status</th>
+                    <th scope="col" style="width: 13%;" class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="invoice-table-body">
+                {% for inv in invoices %}
+                <tr id="invoice-row-{{ inv.id }}" class="invoice-data-row" data-status="{{ inv.status|upper }}" data-search="{{ inv.company_name|lower }} {{ inv.invoice_number|lower }}">
+                    <td id="invoice-company-{{ inv.id }}">
+                        <div class="fw-semibold text-white">{{ inv.company_name }}</div>
+                        <div class="text-secondary small text-truncate" style="max-width: 250px;">{{ inv.description }}</div>
+                    </td>
+                    <td id="invoice-num-{{ inv.id }}">
+                        <code class="text-info fw-bold" id="invoice-code-{{ inv.id }}">{{ inv.invoice_number }}</code>
+                    </td>
+                    <td id="invoice-amount-{{ inv.id }}">
+                        <div class="fw-bold text-white">
+                            {% if inv.currency == 'USD' %}${% elif inv.currency == 'INR' %}₹{% endif %}{{ "{:,.2f}".format(inv.amount) }}
+                        </div>
+                        <div class="text-secondary small">{{ inv.currency }}</div>
+                    </td>
+                    <td id="invoice-due-{{ inv.id }}">
+                        <span class="text-secondary">{{ inv.due_date }}</span>
+                    </td>
+                    <td id="invoice-status-{{ inv.id }}">
+                        {% if inv.status == 'Paid' %}
+                            <span class="badge-paid" id="badge-status-{{ inv.id }}"><i class="bi bi-check-circle-fill me-1"></i>Paid</span>
+                        {% elif inv.status == 'Pending' %}
+                            <span class="badge-pending" id="badge-status-{{ inv.id }}"><i class="bi bi-clock-fill me-1"></i>Pending</span>
+                        {% elif inv.status == 'Overdue' %}
+                            <span class="badge-overdue" id="badge-status-{{ inv.id }}"><i class="bi bi-exclamation-circle-fill me-1"></i>Overdue</span>
+                        {% else %}
+                            <span class="badge bg-secondary" id="badge-status-{{ inv.id }}">{{ inv.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <a href="/invoices/{{ inv.id }}" id="invoice-view-btn-{{ inv.id }}" class="btn btn-sm btn-outline-primary view-details-btn">
+                            View Details <i class="bi bi-arrow-right-short"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="no-invoices-found" class="p-5 text-center text-secondary d-none">
+        <i class="bi bi-search fs-1 mb-2"></i>
+        <p class="mb-0">No invoices found matching your filter criteria.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filterInvoices() {
+    const searchVal = document.getElementById('invoice-search-input').value.toLowerCase().trim();
+    const statusVal = document.getElementById('invoice-status-filter').value;
+    const rows = document.querySelectorAll('.invoice-data-row');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+        const rowSearch = row.getAttribute('data-search') || '';
+        const rowStatus = row.getAttribute('data-status') || '';
+
+        const matchesSearch = searchVal === '' || rowSearch.includes(searchVal);
+        const matchesStatus = statusVal === 'ALL' || rowStatus === statusVal;
+
+        if (matchesSearch && matchesStatus) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    document.getElementById('visible-invoice-count').textContent = visibleCount;
+    const noResults = document.getElementById('no-invoices-found');
+    if (visibleCount === 0) {
+        noResults.classList.remove('d-none');
+    } else {
+        noResults.classList.add('d-none');
+    }
+}
+</script>
+{% endblock %}

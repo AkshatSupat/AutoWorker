@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="primary" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1280" height="800" fill="url(#bg)"/>
+  
+  <!-- Browser Chrome Header -->
+  <rect width="1280" height="48" fill="#0b0f19"/>
+  <circle cx="24" cy="24" r="6" fill="#ef4444"/>
+  <circle cx="44" cy="24" r="6" fill="#f59e0b"/>
+  <circle cx="64" cy="24" r="6" fill="#10b981"/>
+  <!-- URL Bar -->
+  <rect x="120" y="8" width="800" height="32" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="140" y="29" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">🔒 http://localhost:5001/invoices — CorpFlow Financial Portal</text>
+  
+  <!-- CorpFlow Navbar -->
+  <rect y="48" width="1280" height="64" fill="#111827" stroke="#1f2937" stroke-width="1"/>
+  <text x="48" y="88" fill="#ffffff" font-family="Inter, sans-serif" font-size="20" font-weight="bold">CorpFlow <tspan fill="#3b82f6">ERP</tspan></text>
+  <text x="240" y="86" fill="#60a5fa" font-family="Inter, sans-serif" font-size="14" font-weight="600">Invoices</text>
+  <text x="340" y="86" fill="#9ca3af" font-family="Inter, sans-serif" font-size="14">Data Entry</text>
+  <text x="450" y="86" fill="#9ca3af" font-family="Inter, sans-serif" font-size="14">Submissions Log</text>
+  
+  <!-- Content Area -->
+  <text x="48" y="160" fill="#ffffff" font-family="Inter, sans-serif" font-size="24" font-weight="700">Accounts Payable — Invoices</text>
+  <text x="48" y="185" fill="#94a3b8" font-family="Inter, sans-serif" font-size="14">Manage, search, and verify incoming corporate vendor invoices</text>
+  
+  <!-- Search and Filters -->
+  <rect x="48" y="210" width="400" height="42" rx="8" fill="#1e293b" stroke="#374151" stroke-width="1"/>
+  <text x="68" y="236" fill="#9ca3af" font-family="Inter, sans-serif" font-size="14">🔍 Search vendor, invoice ID, or amount...</text>
+  <rect x="470" y="210" width="140" height="42" rx="8" fill="#1e293b" stroke="#374151" stroke-width="1"/>
+  <text x="490" y="236" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="14">Status: ALL ▾</text>
+  
+  <!-- Table Container -->
+  <rect x="48" y="280" width="1184" height="460" rx="12" fill="#111827" stroke="#1f2937" stroke-width="1"/>
+  
+  <!-- Table Header -->
+  <rect x="48" y="280" width="1184" height="48" rx="12" fill="#1f2937"/>
+  <text x="72" y="310" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13" font-weight="600">INVOICE #</text>
+  <text x="220" y="310" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13" font-weight="600">VENDOR / COMPANY</text>
+  <text x="480" y="310" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13" font-weight="600">AMOUNT</text>
+  <text x="640" y="310" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13" font-weight="600">DUE DATE</text>
+  <text x="800" y="310" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13" font-weight="600">STATUS</text>
+  <text x="980" y="310" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13" font-weight="600">ACTIONS</text>
+  
+  <!-- Row 1 (Highlight: Acme Corp) -->
+  <rect x="48" y="330" width="1184" height="56" fill="rgba(59, 130, 246, 0.08)" stroke="#3b82f6" stroke-width="1"/>
+  <text x="72" y="364" fill="#60a5fa" font-family="Inter, sans-serif" font-size="14" font-weight="600">INV-2026-001</text>
+  <text x="220" y="364" fill="#ffffff" font-family="Inter, sans-serif" font-size="14" font-weight="600">Acme Corp</text>
+  <text x="480" y="364" fill="#10b981" font-family="Inter, sans-serif" font-size="14" font-weight="600">$14,500.00 USD</text>
+  <text x="640" y="364" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="14">2026-11-15</text>
+  <rect x="800" y="347" width="80" height="26" rx="13" fill="rgba(245, 158, 11, 0.2)"/>
+  <text x="818" y="364" fill="#f59e0b" font-family="Inter, sans-serif" font-size="12" font-weight="600">Pending</text>
+  <rect x="980" y="344" width="100" height="30" rx="6" fill="#2563eb"/>
+  <text x="1002" y="364" fill="#ffffff" font-family="Inter, sans-serif" font-size="12" font-weight="600">Inspect →</text>
+  
+  <!-- Row 2 -->
+  <rect x="48" y="390" width="1184" height="56" fill="#111827"/>
+  <text x="72" y="424" fill="#94a3b8" font-family="Inter, sans-serif" font-size="14">INV-2026-002</text>
+  <text x="220" y="424" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="14">TechVision Solutions</text>
+  <text x="480" y="424" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="14">$8,250.00 USD</text>
+  <text x="640" y="424" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="14">2026-10-30</text>
+  <rect x="800" y="407" width="80" height="26" rx="13" fill="rgba(16, 185, 129, 0.2)"/>
+  <text x="825" y="424" fill="#10b981" font-family="Inter, sans-serif" font-size="12" font-weight="600">Paid</text>
+  <rect x="980" y="404" width="100" height="30" rx="6" fill="#1e293b" stroke="#374151" stroke-width="1"/>
+  <text x="1002" y="424" fill="#94a3b8" font-family="Inter, sans-serif" font-size="12">Inspect →</text>
+  
+  <!-- Row 3 -->
+  <rect x="48" y="450" width="1184" height="56" fill="#161e2e"/>
+  <text x="72" y="484" fill="#94a3b8" font-family="Inter, sans-serif" font-size="14">INV-2026-003</text>
+  <text x="220" y="484" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="14">Apex Cloud Services</text>
+  <text x="480" y="484" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="14">$19,800.00 USD</text>
+  <text x="640" y="484" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="14">2026-10-15</text>
+  <rect x="800" y="467" width="80" height="26" rx="13" fill="rgba(239, 68, 68, 0.2)"/>
+  <text x="814" y="484" fill="#ef4444" font-family="Inter, sans-serif" font-size="12" font-weight="600">Overdue</text>
+  <rect x="980" y="464" width="100" height="30" rx="6" fill="#1e293b" stroke="#374151" stroke-width="1"/>
+  <text x="1002" y="484" fill="#94a3b8" font-family="Inter, sans-serif" font-size="12">Inspect →</text>
+</svg>

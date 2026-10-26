@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="800" fill="url(#bg)"/>
+  <!-- Browser Bar -->
+  <rect width="1280" height="48" fill="#0b0f19"/>
+  <circle cx="24" cy="24" r="6" fill="#ef4444"/>
+  <circle cx="44" cy="24" r="6" fill="#f59e0b"/>
+  <circle cx="64" cy="24" r="6" fill="#10b981"/>
+  <rect x="120" y="8" width="800" height="32" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="140" y="29" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">🔒 http://localhost:5001/internal/data-entry — Submission Success Confirmation</text>
+  
+  <!-- Success Card -->
+  <rect x="280" y="100" width="720" height="600" rx="16" fill="#111827" stroke="#10b981" stroke-width="2"/>
+  
+  <circle cx="640" cy="180" r="44" fill="rgba(16, 185, 129, 0.15)"/>
+  <circle cx="640" cy="180" r="32" fill="#10b981"/>
+  <path d="M628 180 L637 189 L653 172" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <text x="640" y="260" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-size="24" font-weight="700" id="success-message">Ledger Entry Created Successfully!</text>
+  <text x="640" y="290" text-anchor="middle" fill="#94a3b8" font-family="Inter, sans-serif" font-size="14">Transaction ledger has been updated and verified.</text>
+  
+  <rect x="330" y="320" width="620" height="240" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  
+  <text x="360" y="360" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">RECORD ID</text>
+  <text x="360" y="388" fill="#60a5fa" font-family="Inter, sans-serif" font-size="16" font-weight="700" id="submitted-id">SUB-1001</text>
+  
+  <text x="660" y="360" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">VENDOR</text>
+  <text x="660" y="388" fill="#ffffff" font-family="Inter, sans-serif" font-size="16" font-weight="600" id="submitted-company-name">Acme Corp</text>
+  
+  <text x="360" y="440" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">INVOICE NUMBER</text>
+  <text x="360" y="468" fill="#ffffff" font-family="Inter, sans-serif" font-size="16" font-weight="600" id="submitted-invoice-number">INV-2026-001</text>
+  
+  <text x="660" y="440" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">AMOUNT</text>
+  <text x="660" y="468" fill="#10b981" font-family="Inter, sans-serif" font-size="16" font-weight="700" id="submitted-amount">$14,500.00 USD</text>
+  
+  <text x="360" y="515" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">VERIFICATION STATUS</text>
+  <text x="360" y="540" fill="#10b981" font-family="Inter, sans-serif" font-size="14" font-weight="600">✓ Verified in Submissions Ledger (200 OK)</text>
+  
+  <rect x="490" y="600" width="300" height="46" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="540" y="628" fill="#e2e8f0" font-family="Inter, sans-serif" font-size="14" font-weight="600">View In Submissions Log →</text>
+</svg>

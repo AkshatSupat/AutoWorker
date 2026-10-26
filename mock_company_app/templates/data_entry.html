@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Internal Data Entry{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Form Header -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <span class="badge bg-primary mb-1">INTERNAL ERP SYSTEM</span>
+                <h2 class="fw-bold mb-1" id="form-heading">Invoice Record Data Entry</h2>
+                <p class="text-secondary mb-0">Record verified invoice transactions into the internal ledger.</p>
+            </div>
+            <div>
+                <a href="/internal/submissions" id="view-submissions-link" class="btn btn-outline-secondary">
+                    <i class="bi bi-clock-history me-1"></i> View Submissions
+                </a>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card shadow-lg">
+            <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-white"><i class="bi bi-input-cursor me-2 text-info"></i>Transaction Details</span>
+                <span class="badge bg-secondary">Status: Ready for Input</span>
+            </div>
+            <div class="card-body p-4">
+                <form id="data-entry-form" action="/internal/data-entry" method="POST">
+                    <!-- Company Name -->
+                    <div class="mb-3">
+                        <label for="company_name" class="form-label">
+                            Company Name <span class="text-danger">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control form-control-lg" 
+                            id="company_name" 
+                            name="company_name" 
+                            placeholder="e.g. Acme Corp" 
+                            value="{{ prefill.company_name or '' }}" 
+                            required
+                        >
+                        <div class="form-text text-secondary">The registered corporate entity name as shown on the invoice.</div>
+                    </div>
+
+                    <!-- Invoice Number -->
+                    <div class="mb-3">
+                        <label for="invoice_number" class="form-label">
+                            Invoice Number <span class="text-danger">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="invoice_number" 
+                            name="invoice_number" 
+                            placeholder="e.g. INV-2026-001" 
+                            value="{{ prefill.invoice_number or '' }}" 
+                            required
+                        >
+                        <div class="form-text text-secondary">Unique alphanumeric invoice identifier code.</div>
+                    </div>
+
+                    <!-- Amount & Currency Row -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-7">
+                            <label for="amount" class="form-label">
+                                Amount <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-secondary">$ / ₹</span>
+                                <input 
+                                    type="number" 
+                                    step="0.01" 
+                                    min="0.01" 
+                                    class="form-control" 
+                                    id="amount" 
+                                    name="amount" 
+                                    placeholder="0.00" 
+                                    value="{{ prefill.amount or '' }}" 
+                                    required
+                                >
+                            </div>
+                            <div class="form-text text-secondary">Total amount payable / receivable.</div>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="currency" class="form-label">
+                                Currency
+                            </label>
+                            <select class="form-select" id="currency" name="currency">
+                                <option value="USD" {% if prefill.currency == 'USD' %}selected{% endif %}>USD ($)</option>
+                                <option value="INR" {% if prefill.currency == 'INR' %}selected{% endif %}>INR (₹)</option>
+                                <option value="EUR" {% if prefill.currency == 'EUR' %}selected{% endif %}>EUR (€)</option>
+                                <option value="GBP" {% if prefill.currency == 'GBP' %}selected{% endif %}>GBP (£)</option>
+                            </select>
+                            <div class="form-text text-secondary">Transaction currency code.</div>
+                        </div>
+                    </div>
+
+                    <!-- Due Date -->
+                    <div class="mb-3">
+                        <label for="due_date" class="form-label">
+                            Due Date <span class="text-danger">*</span>
+                        </label>
+                        <input 
+                            type="date" 
+                            class="form-control" 
+                            id="due_date" 
+                            name="due_date" 
+                            value="{{ prefill.due_date or '' }}" 
+                            required
+                        >
+                        <div class="form-text text-secondary">Maturity or payment deadline date (YYYY-MM-DD).</div>
+                    </div>
+
+                    <!-- Notes / Description -->
+                    <div class="mb-4">
+                        <label for="notes" class="form-label">
+                            Notes &amp; Description
+                        </label>
+                        <textarea 
+                            class="form-control" 
+                            id="notes" 
+                            name="notes" 
+                            rows="4" 
+                            placeholder="Enter notes, line item details, or operational tags..."
+                        >{{ prefill.notes or '' }}</textarea>
+                        <div class="form-text text-secondary">Internal notes or operational context regarding this entry.</div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between align-items-center pt-2">
+                        <button type="reset" id="reset-btn" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Clear Form
+                        </button>
+                        <button type="submit" id="submit-btn" class="btn btn-primary px-4 py-2">
+                            <i class="bi bi-send-check me-1"></i> Submit Invoice Entry
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Instructions Panel -->
+        <div class="card mt-4 bg-dark border-secondary">
+            <div class="card-body">
+                <div class="d-flex align-items-start gap-3">
+                    <i class="bi bi-info-circle-fill text-info fs-4 mt-1"></i>
+                    <div>
+                        <h6 class="fw-bold text-white mb-1">Playwright & Agent Interaction Guidelines</h6>
+                        <p class="text-secondary small mb-0">
+                            Automation targets: <code>#company_name</code>, <code>#invoice_number</code>, <code>#amount</code>, <code>#due_date</code>, <code>#notes</code>, and click <code>#submit-btn</code>. After submission, you will be redirected to the confirmation view with record status.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

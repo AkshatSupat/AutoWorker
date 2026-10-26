@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Internal Submissions Log{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <div>
+        <h2 class="fw-bold mb-1" id="submissions-title">Internal Submissions Ledger</h2>
+        <p class="text-secondary mb-0">Audit history of all invoices recorded into the internal system.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/api/submissions" target="_blank" id="view-api-btn" class="btn btn-outline-info">
+            <i class="bi bi-braces me-1"></i> JSON API
+        </a>
+        <a href="/internal/data-entry" id="btn-add-entry" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> New Data Entry
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
+        <span class="fw-bold text-white"><i class="bi bi-list-check me-2 text-info"></i>Recorded Entries Log</span>
+        <span class="badge bg-secondary" id="submissions-count-badge">{{ submissions|length }} Entries Recorded</span>
+    </div>
+
+    {% if submissions %}
+    <div class="table-responsive">
+        <table class="table table-custom table-hover mb-0" id="submissions-table">
+            <thead>
+                <tr>
+                    <th scope="col" style="width: 12%;">Sub ID</th>
+                    <th scope="col" style="width: 18%;">Timestamp</th>
+                    <th scope="col" style="width: 22%;">Company</th>
+                    <th scope="col" style="width: 15%;">Invoice #</th>
+                    <th scope="col" style="width: 15%;">Amount</th>
+                    <th scope="col" style="width: 18%;">Due Date</th>
+                </tr>
+            </thead>
+            <tbody id="submissions-table-body">
+                {% for sub in submissions %}
+                <tr id="submission-row-{{ sub.id }}" class="submission-item">
+                    <td>
+                        <span class="badge bg-dark border border-secondary text-info fw-bold" id="sub-id-{{ sub.id }}">{{ sub.id }}</span>
+                    </td>
+                    <td class="text-secondary small" id="sub-time-{{ sub.id }}">
+                        {{ sub.created_at }}
+                    </td>
+                    <td id="sub-company-{{ sub.id }}">
+                        <div class="fw-semibold text-white">{{ sub.company_name }}</div>
+                        {% if sub.notes %}
+                        <div class="text-secondary small text-truncate" style="max-width: 260px;" title="{{ sub.notes }}">{{ sub.notes }}</div>
+                        {% endif %}
+                    </td>
+                    <td id="sub-inv-{{ sub.id }}">
+                        <code class="text-warning fw-bold">{{ sub.invoice_number }}</code>
+                    </td>
+                    <td id="sub-amount-{{ sub.id }}">
+                        <span class="fw-bold text-success">
+                            {% if sub.currency == 'USD' %}${% elif sub.currency == 'INR' %}₹{% endif %}{{ "{:,.2f}".format(sub.amount) }}
+                        </span>
+                        <span class="text-secondary small">({{ sub.currency }})</span>
+                    </td>
+                    <td id="sub-due-{{ sub.id }}">
+                        <span class="text-secondary">{{ sub.due_date }}</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card-body p-5 text-center" id="no-submissions-msg">
+        <div class="mb-3">
+            <i class="bi bi-inbox text-secondary" style="font-size: 3rem;"></i>
+        </div>
+        <h5 class="fw-bold text-white mb-2">No Submissions Recorded Yet</h5>
+        <p class="text-secondary mb-3">No invoice records have been submitted into the internal system so far.</p>
+        <a href="/internal/data-entry" class="btn btn-primary">
+            <i class="bi bi-pencil-square me-1"></i> Submit First Entry
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

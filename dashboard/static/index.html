@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoWorker — Autonomous AI Task Worker | CentrAlign AI</title>
+  
+  <!-- Inter & JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+
+  <!-- ========================================================================
+       Top Header Bar
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-logo-container">
+        <!-- AI Agent Spark / Robot SVG -->
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L14.4 7.2L20 8.4L15.8 12.6L17 18.2L12 15.4L7 18.2L8.2 12.6L4 8.4L9.6 7.2L12 2Z" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="brand-title-wrap">
+        <div class="brand-title">
+          AutoWorker
+          <span class="brand-badge">Enterprise v1.4</span>
+        </div>
+        <div class="brand-subtitle">Autonomous AI Task Worker</div>
+      </div>
+    </div>
+
+    <div class="header-status-group">
+      <!-- Live Agent WebSocket Status -->
+      <div class="status-pill" id="connectionStatusPill">
+        <div class="status-dot disconnected" id="connectionDot"></div>
+        <span id="connectionText">Connecting...</span>
+      </div>
+
+      <!-- Live Clock -->
+      <div class="status-pill">
+        <span style="color:var(--text-dim); font-size:11px;">UTC:</span>
+        <span style="font-family:var(--font-mono); font-size:12px;" id="clockDisplay">--:--:--</span>
+      </div>
+
+      <!-- CentrAlign AI Branding Badge -->
+      <div class="centralign-badge">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>CentrAlign AI Evaluation Edition</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       App Layout Grid
+       ======================================================================== -->
+  <div class="app-layout">
+
+    <!-- ======================================================================
+         Left Sidebar
+         ====================================================================== -->
+    <aside class="app-sidebar">
+
+      <!-- Task Dispatcher Card -->
+      <div class="sidebar-card">
+        <div class="card-title-bar">
+          <span class="card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Task Dispatcher
+          </span>
+          <span style="font-size:10px; color:var(--accent-purple); font-weight:600;">Autonomous Loop</span>
+        </div>
+
+        <textarea 
+          class="task-textarea" 
+          id="taskInput" 
+          placeholder="Enter goal (e.g. Find invoice from Acme Corp, extract amount and due date, enter into internal ledger...)"
+        ></textarea>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" id="btnDeploy">
+            <span>Deploy Agent</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+          <button class="btn btn-demo" id="btnDemo" title="Showcase full autonomous workflow with demo data">
+            <span>Run Demo</span>
+          </button>
+          <button class="btn btn-demo-error" id="btnDemoError" title="Simulate a task with an error step to test real-time failure diagnosis, isolation, and self-correction">
+            <span style="font-size:12px;">⚡</span>
+            <span>Debug Demo</span>
+          </button>
+        </div>
+
+        <!-- Example Tasks -->
+        <div style="margin-top:14px;">
+          <div style="font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:6px;">
+            Preset Workflow Templates:
+          </div>
+          <div class="example-tasks-list">
+            <button class="example-task-chip" data-prompt="Find latest invoice from Acme Corp, extract amount and due date, enter into internal system">
+              <span class="chip-icon">↳</span>
+              <span>Find latest invoice from Acme Corp, extract amount &amp; enter into internal system</span>
+            </button>
+            <button class="example-task-chip" data-prompt="List all overdue invoices and create a summary report">
+              <span class="chip-icon">↳</span>
+              <span>List all overdue invoices and create a summary report</span>
+            </button>
+            <button class="example-task-chip" data-prompt="Find invoice from TechVision Solutions and verify it's been processed">
+              <span class="chip-icon">↳</span>
+              <span>Find invoice from TechVision Solutions and verify it's been processed</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task History Card -->
+      <div class="sidebar-card">
+        <div class="card-title-bar">
+          <span class="card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            Execution History
+          </span>
+          <span style="font-size:10px; color:var(--text-dim);">SQLite Ledger</span>
+        </div>
+        <div class="task-history-list" id="taskHistoryList">
+          <!-- Populated dynamically via /api/tasks -->
+        </div>
+      </div>
+
+      <!-- Company Knowledge Card -->
+      <div class="sidebar-card">
+        <div class="card-title-bar">
+          <span class="card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            Company Knowledge
+          </span>
+          <button class="btn btn-secondary" style="padding:2px 8px; font-size:11px;" id="btnAddKnowledge">+ Add</button>
+        </div>
+        <div class="knowledge-list" id="knowledgeList">
+          <!-- Populated dynamically via /api/company-knowledge -->
+        </div>
+      </div>
+
+      <!-- System Diagnostics Card -->
+      <div class="sidebar-card">
+        <div class="card-title-bar">
+          <span class="card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+              <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+              <line x1="6" y1="6" x2="6.01" y2="6"/>
+              <line x1="6" y1="18" x2="6.01" y2="18"/>
+            </svg>
+            System Diagnostics
+          </span>
+        </div>
+        <div class="settings-grid">
+          <div class="setting-row">
+            <span class="setting-label">Reasoning Engine</span>
+            <span class="setting-val">Gemini 2.0 Flash</span>
+          </div>
+          <div class="setting-row">
+            <span class="setting-label">Browser Engine</span>
+            <span class="setting-val">Playwright Chromium</span>
+          </div>
+          <div class="setting-row">
+            <span class="setting-label">Target ERP</span>
+            <span class="setting-val">CorpFlow :5001</span>
+          </div>
+          <div class="setting-row">
+            <span class="setting-label">Approval Guard</span>
+            <span class="setting-val">&gt;= $10,000 USD</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ======================================================================
+         Center: Live Execution View
+         ====================================================================== -->
+    <main class="app-main">
+
+      <!-- Active Task Header Banner -->
+      <section class="task-banner-card" id="activeTaskBanner">
+        <div class="banner-top-row">
+          <div class="banner-meta">
+            <span class="task-id-tag" id="activeTaskId">task_idle</span>
+            <span class="badge-status in_progress" id="activeTaskStatus">READY</span>
+          </div>
+          <div class="timer-box">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span id="elapsedTimer">00:00</span>
+          </div>
+        </div>
+
+        <div class="banner-goal-text" id="activeTaskGoal">
+          Awaiting task assignment. Enter a goal in the sidebar or run the demo workflow.
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+          <div class="progress-labels">
+            <span id="progressStepText">Step 0 of 5</span>
+            <span id="progressPercent" style="font-family:var(--font-mono); font-weight:600;">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Agent Understanding & Plan Card -->
+      <section class="understanding-card" id="understandingCard" style="display:none;">
+        <div class="understanding-header">
+          <div class="understanding-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a8 8 0 0 0-8 8c0 3.3 2 6 5 7.4V20a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2.6c3-1.4 5-4.1 5-7.4a8 8 0 0 0-8-8z"/>
+            </svg>
+            Agent Cognitive Understanding &amp; Execution Plan
+          </div>
+          <span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">Automated Decomposition</span>
+        </div>
+
+        <div class="understanding-text" id="understandingText">
+          Analyzing user request...
+        </div>
+
+        <div class="plan-checklist" id="planChecklist">
+          <!-- Populated dynamically via plan_created event -->
+        </div>
+      </section>
+
+      <!-- Failure Diagnostic Alert Banner -->
+      <div class="failure-alert-banner" id="failureAlertBanner" style="display:none;">
+        <div class="alert-icon-wrap">
+          <span class="alert-pulse-ring"></span>
+          <span style="font-size:15px;">⚠️</span>
+        </div>
+        <div class="alert-content">
+          <div class="alert-title-row">
+            <strong id="alertStepTitle">Step Failed:</strong>
+            <span class="alert-badge">Root Cause Detected</span>
+          </div>
+          <div class="alert-msg" id="alertStepMsg">ElementNotFoundError on #selector</div>
+        </div>
+        <button class="btn btn-jump-error" id="btnJumpToError" title="Scroll directly to the failed step and inspect error details">
+          <span>Inspect Failed Step</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+
+      <!-- Live Execution Timeline -->
+      <section class="timeline-section">
+        <div class="section-title-wrap">
+          <div class="section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            Live Execution Stream
+          </div>
+          <span style="font-size:11px; color:var(--text-dim);">Step Telemetry &amp; Diagnostics</span>
+        </div>
+
+        <!-- Debug Controls & Step Filter Toolbar -->
+        <div class="timeline-controls-bar">
+          <div class="filter-tabs">
+            <button class="filter-btn active" data-filter="all" id="filterAllSteps">
+              <span>All Steps</span>
+              <span class="filter-badge" id="badgeAllCount">0</span>
+            </button>
+            <button class="filter-btn" data-filter="error" id="filterErrorSteps">
+              <span class="filter-error-dot"></span>
+              <span>Issues &amp; Failures</span>
+              <span class="filter-badge error" id="badgeErrorCount">0</span>
+            </button>
+            <button class="filter-btn" data-filter="approval" id="filterApprovalSteps">
+              <span>Approvals</span>
+              <span class="filter-badge" id="badgeApprovalCount">0</span>
+            </button>
+          </div>
+
+          <div class="timeline-actions">
+            <div class="search-input-wrap">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="stepSearchInput" placeholder="Filter steps, errors, tools..." class="search-input" />
+            </div>
+            <button class="btn btn-ghost-sm" id="btnToggleAllSteps" title="Expand or collapse all step diagnostics">
+              <span id="toggleAllIcon">⤢</span>
+              <span id="toggleAllText">Expand All</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="timeline-feed" id="timelineFeed">
+          <!-- Initial Placeholder -->
+          <div style="padding:40px 20px; text-align:center; color:var(--text-dim); font-size:13px;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px; display:block; opacity:0.6;">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+            No active execution stream. Click <strong>Run Demo</strong> or dispatch a task to begin.
+          </div>
+        </div>
+      </section>
+
+      <!-- Task Completion Panel -->
+      <section class="completion-card" id="completionCard" style="display:none;">
+        <div class="completion-header">
+          <div class="completion-icon">✓</div>
+          <div>
+            <div style="font-size:18px; font-weight:700; color:#ffffff;">Autonomous Task Execution Verified</div>
+            <div style="font-size:12px; color:var(--success); font-weight:600;">Status: 100% PASS • Compliance &amp; Outcome Validated</div>
+          </div>
+        </div>
+
+        <div class="completion-summary-text" id="completionSummary">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div class="evidence-box">
+          <div class="evidence-title">Execution Evidence &amp; Audit Trail</div>
+          <ul class="evidence-list" id="evidenceList">
+            <!-- Populated dynamically -->
+          </ul>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+          <button class="btn btn-secondary" id="btnDownloadReport">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download Audit Report (.md)
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ======================================================================
+         Right Panel: Agent's Live View
+         ====================================================================== -->
+    <aside class="agent-view-panel">
+      <!-- Tabs -->
+      <div class="view-tabs">
+        <div class="view-tab active" id="tabBrowser">Live Browser</div>
+        <div class="view-tab" id="tabDebug">Debug Console <span class="tab-badge" id="debugLogsBadge">0</span></div>
+        <div class="view-tab" id="tabContext">Memory Context</div>
+      </div>
+
+      <!-- Browser Frame Container -->
+      <div class="browser-mock-frame" id="browserViewContainer">
+        <div class="browser-header-bar">
+          <div class="browser-dots">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+          </div>
+          <div class="browser-url-input" id="browserUrl">
+            🔒 http://localhost:5001/invoices
+          </div>
+          <div class="live-stream-badge">LIVE</div>
+        </div>
+
+        <div class="browser-viewport">
+          <img id="browserImage" src="/screenshots/step1_invoices_catalog.svg" alt="Agent Live Browser View" />
+          <div class="viewport-placeholder" id="browserPlaceholder" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            <span>Agent browser session idle.<br>Will update as browser navigates.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Context Inspector Container -->
+      <div class="context-inspector-card" id="contextViewContainer" style="display:none;">
+        <pre id="contextJsonView" style="margin:0; font-family:var(--font-mono);">{
+  "status": "awaiting_execution"
+}</pre>
+      </div>
+
+      <!-- Debug Console Terminal Container -->
+      <div class="debug-console-card" id="debugViewContainer" style="display:none;">
+        <div class="debug-console-header">
+          <div class="debug-title-group">
+            <span class="debug-live-dot"></span>
+            <span>Agent Telemetry &amp; Logs</span>
+          </div>
+          <div class="debug-console-actions">
+            <button class="btn btn-ghost-xs" id="btnCopyDebugLogs" title="Copy raw logs">Copy</button>
+            <button class="btn btn-ghost-xs" id="btnClearDebugLogs" title="Clear stream">Clear</button>
+          </div>
+        </div>
+        <div class="debug-stream-terminal" id="debugStreamTerminal">
+          <!-- Dynamically populated log entries -->
+          <div class="debug-log-empty">Telemetry stream ready. Awaiting agent activity...</div>
+        </div>
+      </div>
+
+      <div style="font-size:11px; color:var(--text-dim); text-align:center;">
+        AutoWorker Vision &amp; DOM Telemetry Pipeline
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- ========================================================================
+       Modals: Human Approval Modal
+       ======================================================================== -->
+  <div class="modal-overlay" id="approvalModal">
+    <div class="approval-modal-card">
+      <div class="approval-badge-warning">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        Human-in-the-Loop Authorization Required
+      </div>
+
+      <div class="approval-title">Supervisor Sign-Off Required</div>
+
+      <div class="approval-question-text" id="approvalQuestion">
+        Invoice amount ($14,500.00 USD) exceeds the $10,000 threshold defined in CorpFlow Compliance Policy. Do you authorize AutoWorker to post this record into the Internal ERP Ledger?
+      </div>
+
+      <div style="font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">
+        Context &amp; Payload Data:
+      </div>
+      <pre class="approval-context-code" id="approvalContext">{
+  "vendor": "Acme Corp",
+  "invoice_number": "INV-2026-001",
+  "amount": "$14,500.00 USD",
+  "threshold": "$10,000.00 USD"
+}</pre>
+
+      <div class="approval-actions">
+        <button class="btn btn-primary" id="btnApproveStep" style="background:var(--success); flex:1;">
+          <span>Authorize Step ✓</span>
+        </button>
+        <button class="btn btn-secondary" id="btnRejectStep" style="background:rgba(239, 68, 68, 0.2); border-color:var(--error); color:#fca5a5;">
+          <span>Reject / Abort ✗</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       Modal: Add Company Knowledge
+       ======================================================================== -->
+  <div class="modal-overlay" id="knowledgeModal">
+    <div class="standard-modal-card">
+      <div class="card-title-bar">
+        <div style="font-size:16px; font-weight:700; color:#ffffff;">Add Company Knowledge Entry</div>
+      </div>
+      <form id="knowledgeForm" style="display:flex; flex-direction:column; gap:12px;">
+        <div class="input-field-group">
+          <label class="input-label" for="knowCategory">Category</label>
+          <input class="input-text" id="knowCategory" required placeholder="e.g. Policy, Credentials, Schema" value="Compliance &amp; Policy">
+        </div>
+        <div class="input-field-group">
+          <label class="input-label" for="knowTitle">Title</label>
+          <input class="input-text" id="knowTitle" required placeholder="e.g. Vendor Invoicing Threshold">
+        </div>
+        <div class="input-field-group">
+          <label class="input-label" for="knowContent">Content</label>
+          <textarea class="input-text" id="knowContent" required rows="3" placeholder="Instructions, URLs, rules or credentials..."></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+          <button type="button" class="btn btn-secondary" id="btnCancelKnowledge">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Knowledge</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       Modal: Lightbox Screenshot Zoom
+       ======================================================================== -->
+  <div class="lightbox-modal" id="lightboxModal">
+    <button class="lightbox-close-btn" id="lightboxClose">✕</button>
+    <div class="lightbox-content">
+      <img id="lightboxImage" src="" alt="High Resolution Screenshot">
+    </div>
+  </div>
+
+  <!-- App Script -->
+  <script src="/static/app.js"></script>
+</body>
+</html>

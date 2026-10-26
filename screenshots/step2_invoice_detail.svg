@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="800" fill="url(#bg)"/>
+  <!-- Browser Bar -->
+  <rect width="1280" height="48" fill="#0b0f19"/>
+  <circle cx="24" cy="24" r="6" fill="#ef4444"/>
+  <circle cx="44" cy="24" r="6" fill="#f59e0b"/>
+  <circle cx="64" cy="24" r="6" fill="#10b981"/>
+  <rect x="120" y="8" width="800" height="32" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="140" y="29" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">🔒 http://localhost:5001/invoices/1 — Acme Corp Invoice INV-2026-001</text>
+  
+  <!-- Content -->
+  <rect x="180" y="90" width="920" height="640" rx="16" fill="#111827" stroke="#1f2937" stroke-width="1"/>
+  <text x="220" y="140" fill="#ffffff" font-family="Inter, sans-serif" font-size="22" font-weight="700">Invoice Details: INV-2026-001</text>
+  <text x="220" y="165" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">Auto-parsed by AutoWorker agent vision extractor</text>
+  
+  <line x1="220" y1="185" x2="1060" y2="185" stroke="#1f2937" stroke-width="1"/>
+  
+  <rect x="220" y="210" width="400" height="100" rx="8" fill="#1e293b"/>
+  <text x="240" y="240" fill="#94a3b8" font-family="Inter, sans-serif" font-size="12">VENDOR</text>
+  <text x="240" y="275" fill="#ffffff" font-family="Inter, sans-serif" font-size="20" font-weight="700" id="invoice-company">Acme Corp</text>
+  
+  <rect x="640" y="210" width="420" height="100" rx="8" fill="#1e293b"/>
+  <text x="660" y="240" fill="#94a3b8" font-family="Inter, sans-serif" font-size="12">TOTAL DUE</text>
+  <text x="660" y="275" fill="#10b981" font-family="Inter, sans-serif" font-size="22" font-weight="700" id="invoice-amount">$14,500.00 USD</text>
+  
+  <rect x="220" y="330" width="400" height="90" rx="8" fill="#1e293b"/>
+  <text x="240" y="360" fill="#94a3b8" font-family="Inter, sans-serif" font-size="12">PAYMENT DUE DATE</text>
+  <text x="240" y="395" fill="#60a5fa" font-family="Inter, sans-serif" font-size="18" font-weight="600" id="invoice-due-date">2026-11-15</text>
+  
+  <rect x="640" y="330" width="420" height="90" rx="8" fill="#1e293b"/>
+  <text x="660" y="360" fill="#94a3b8" font-family="Inter, sans-serif" font-size="12">STATUS</text>
+  <text x="660" y="395" fill="#f59e0b" font-family="Inter, sans-serif" font-size="18" font-weight="600" id="invoice-status">Pending Review</text>
+  
+  <rect x="220" y="440" width="840" height="150" rx="8" fill="#1e293b"/>
+  <text x="240" y="470" fill="#94a3b8" font-family="Inter, sans-serif" font-size="12">LINE ITEMS &amp; SCOPE</text>
+  <text x="240" y="505" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="14">Enterprise Cloud Migration &amp; Security Hardening Support (Q3-Q4)</text>
+  <text x="240" y="535" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">PO Number: PO-89211 • Net 30 Terms • Wire Transfer Routing: 021000021</text>
+  
+  <rect x="220" y="620" width="300" height="46" rx="8" fill="#2563eb"/>
+  <text x="270" y="648" fill="#ffffff" font-family="Inter, sans-serif" font-size="14" font-weight="600">Copy to Internal Ledger →</text>
+</svg>

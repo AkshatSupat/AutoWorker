@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Submission Success{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Success Alert Header -->
+        <div class="card border-0 mb-4" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 78, 59, 0.3)); border: 1px solid rgba(16, 185, 129, 0.4) !important;">
+            <div class="card-body p-4 text-center">
+                <div class="mb-3">
+                    <span class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 64px; height: 64px; background-color: rgba(16, 185, 129, 0.2); color: #10b981; font-size: 2rem;">
+                        <i class="bi bi-check-lg"></i>
+                    </span>
+                </div>
+                <h3 class="fw-bold text-white mb-2" id="success-message">Invoice Data Entry Successfully Submitted</h3>
+                <p class="text-light mb-0" style="opacity: 0.85;">The record has been processed and saved to the internal database ledger.</p>
+                <div class="mt-3">
+                    <span class="badge bg-success px-3 py-2" id="submission-id-badge">
+                        Record ID: <span id="submitted-id">{{ submission.id }}</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submitted Data Summary Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-white"><i class="bi bi-card-checklist me-2 text-info"></i>Submitted Data Summary</span>
+                <span class="text-secondary small" id="submitted-timestamp">{{ submission.created_at }}</span>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="text-secondary small text-uppercase fw-semibold mb-1">Company Name</div>
+                        <div class="h5 fw-bold text-white mb-0" id="submitted-company-name">{{ submission.company_name }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-secondary small text-uppercase fw-semibold mb-1">Invoice Number</div>
+                        <div class="h5 fw-bold text-info mb-0" id="submitted-invoice-number">{{ submission.invoice_number }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-secondary small text-uppercase fw-semibold mb-1">Amount</div>
+                        <div class="h5 fw-bold text-success mb-0" id="submitted-amount">
+                            {% if submission.currency == 'USD' %}${% elif submission.currency == 'INR' %}₹{% endif %}{{ "{:,.2f}".format(submission.amount) }} {{ submission.currency }}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-secondary small text-uppercase fw-semibold mb-1">Due Date</div>
+                        <div class="h5 fw-bold text-warning mb-0" id="submitted-due-date">{{ submission.due_date }}</div>
+                    </div>
+                    <div class="col-12">
+                        <div class="text-secondary small text-uppercase fw-semibold mb-1">Notes &amp; Description</div>
+                        <div class="p-3 rounded bg-dark border border-secondary text-light" id="submitted-notes">
+                            {{ submission.notes if submission.notes else 'None provided' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
+            <a href="/invoices" id="back-to-invoices-btn" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to Invoices
+            </a>
+            <div class="d-flex gap-2">
+                <a href="/internal/data-entry" id="new-entry-btn" class="btn btn-outline-primary">
+                    <i class="bi bi-plus-lg me-1"></i> Enter Another
+                </a>
+                <a href="/internal/submissions" id="view-submissions-btn" class="btn btn-primary">
+                    <i class="bi bi-table me-1"></i> View Submissions Log
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

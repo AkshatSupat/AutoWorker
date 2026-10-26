@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="800" viewBox="0 0 1280 800">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="800" fill="url(#bg)"/>
+  <!-- Browser Bar -->
+  <rect width="1280" height="48" fill="#0b0f19"/>
+  <circle cx="24" cy="24" r="6" fill="#ef4444"/>
+  <circle cx="44" cy="24" r="6" fill="#f59e0b"/>
+  <circle cx="64" cy="24" r="6" fill="#10b981"/>
+  <rect x="120" y="8" width="800" height="32" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="140" y="29" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">🔒 http://localhost:5001/internal/data-entry — CorpFlow Internal Ledger</text>
+  
+  <!-- Form Container -->
+  <rect x="240" y="80" width="800" height="670" rx="16" fill="#111827" stroke="#1f2937" stroke-width="1"/>
+  <text x="280" y="130" fill="#ffffff" font-family="Inter, sans-serif" font-size="22" font-weight="700">Internal Ledger Entry Form</text>
+  <text x="280" y="155" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">Fields populated autonomously by AutoWorker</text>
+  
+  <line x1="280" y1="175" x2="980" y2="175" stroke="#1f2937" stroke-width="1"/>
+  
+  <!-- Field 1 -->
+  <text x="280" y="210" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13" font-weight="600">COMPANY NAME</text>
+  <rect x="280" y="222" width="700" height="42" rx="6" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="296" y="248" fill="#ffffff" font-family="Inter, sans-serif" font-size="14">Acme Corp</text>
+  
+  <!-- Field 2 -->
+  <text x="280" y="295" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13" font-weight="600">INVOICE NUMBER</text>
+  <rect x="280" y="307" width="700" height="42" rx="6" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="296" y="333" fill="#ffffff" font-family="Inter, sans-serif" font-size="14">INV-2026-001</text>
+  
+  <!-- Field 3 & 4 Grid -->
+  <text x="280" y="380" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13" font-weight="600">AMOUNT</text>
+  <rect x="280" y="392" width="330" height="42" rx="6" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="296" y="418" fill="#10b981" font-family="Inter, sans-serif" font-size="14" font-weight="600">14500.00</text>
+  
+  <text x="650" y="380" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13" font-weight="600">DUE DATE</text>
+  <rect x="650" y="392" width="330" height="42" rx="6" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="666" y="418" fill="#ffffff" font-family="Inter, sans-serif" font-size="14">2026-11-15</text>
+  
+  <!-- Notes -->
+  <text x="280" y="465" fill="#cbd5e1" font-family="Inter, sans-serif" font-size="13" font-weight="600">NOTES &amp; AUDIT TRAIL</text>
+  <rect x="280" y="477" width="700" height="80" rx="6" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="296" y="505" fill="#94a3b8" font-family="Inter, sans-serif" font-size="13">Processed via AutoWorker agent for Acme Corp cloud migration support. Supervisor approved.</text>
+  
+  <!-- Submit button with focus glow -->
+  <rect x="280" y="585" width="220" height="46" rx="8" fill="#10b981"/>
+  <text x="325" y="613" fill="#ffffff" font-family="Inter, sans-serif" font-size="15" font-weight="600">Submit Record ✓</text>
+</svg>

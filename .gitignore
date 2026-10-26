@@ -1,0 +1,26 @@
+# Dependencies & Environments
+venv/
+.venv/
+node_modules/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment & Sensitive configs
+.env
+.env.*
+!.env.example
+
+# Databases & local state
+*.db
+*.sqlite
+autoworker.db
+agent_run.json
+*.log
+
+# Dynamic Screenshots (keep demo SVGs)
+screenshots/*.png
+!screenshots/*.svg
+
