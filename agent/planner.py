@@ -77,6 +77,10 @@ class Planner:
             ("apex", "Apex Cloud Systems", 4),
             ("starlight", "Starlight Media Works", 5),
             ("biovantage", "BioVantage Labs", 6),
+            ("quantum", "Quantum Dynamics", 7),
+            ("zenith", "Zenith Retailers", 8),
+            ("pacific", "Pacific Rim Shipping", 9),
+            ("nordic", "Nordic Data Networks", 10),
         ]
         for key, name, iid in known_vendors:
             if key in goal_lower:
@@ -90,6 +94,107 @@ class Planner:
                 if candidate and candidate.lower() not in ("x", "name", ""):
                     company_name = candidate
 
+        # Branch A: Overdue Invoices, Select/List All Invoices, Summary Reports
+        if any(k in goal_lower for k in ["overdue", "select all", "list all", "all invoice", "all overdue", "summary report", "select invoice"]):
+            is_overdue = "overdue" in goal_lower
+            steps = [
+                {
+                    "step_number": 1,
+                    "description": "Navigate to CorpFlow Invoices catalog",
+                    "tool": "browser",
+                    "action": "navigate",
+                    "params": {"url": "http://localhost:5001/invoices"},
+                    "expected_outcome": "Invoices catalog loads showing accounts payable table and filters",
+                    "requires_human_approval": False,
+                },
+                {
+                    "step_number": 2,
+                    "description": "Filter invoices by OVERDUE status" if is_overdue else "Select ALL invoices in status filter",
+                    "tool": "browser",
+                    "action": "select_option",
+                    "params": {
+                        "selector": "#invoice-status-filter",
+                        "value": "OVERDUE" if is_overdue else "ALL",
+                    },
+                    "expected_outcome": "Catalog filters to display overdue invoices" if is_overdue else "Catalog displays all active invoices",
+                    "requires_human_approval": False,
+                },
+                {
+                    "step_number": 3,
+                    "description": "Extract invoice catalog table line items including Company, Invoice #, Amount, Due Date, and Status",
+                    "tool": "browser",
+                    "action": "get_page_content",
+                    "params": {"selector": "#invoice-table"},
+                    "expected_outcome": "Complete structured table extracted with amounts, due dates, and statuses",
+                    "requires_human_approval": False,
+                },
+                {
+                    "step_number": 4,
+                    "description": "Capture visual audit record screenshot of the filtered invoice ledger",
+                    "tool": "browser",
+                    "action": "screenshot",
+                    "params": {},
+                    "expected_outcome": "Visual screenshot audit captured verifying all invoice records and due dates",
+                    "requires_human_approval": False,
+                },
+            ]
+            understanding = (
+                f"Autonomous Task: Navigate to CorpFlow Invoices catalog, "
+                f"{'apply OVERDUE status filter' if is_overdue else 'select ALL invoice statuses'}, "
+                f"extract all line items with explicit payment due dates, amounts, and vendor names, "
+                f"and generate a verified summary report."
+            )
+            return {
+                "understanding": understanding,
+                "steps": steps,
+            }
+
+        # Branch B: Verification of Processing in Submissions Ledger
+        if "verify" in goal_lower and any(k in goal_lower for k in ["process", "submission", "ledger", "entered", "recorded"]):
+            steps = [
+                {
+                    "step_number": 1,
+                    "description": f"Navigate to CorpFlow Invoices catalog to check {company_name} invoice",
+                    "tool": "browser",
+                    "action": "navigate",
+                    "params": {"url": "http://localhost:5001/invoices"},
+                    "expected_outcome": "Invoices catalog renders",
+                    "requires_human_approval": False,
+                },
+                {
+                    "step_number": 2,
+                    "description": f"Extract invoice information and due date for {company_name}",
+                    "tool": "browser",
+                    "action": "get_page_content",
+                    "params": {"selector": "#invoice-table"},
+                    "expected_outcome": f"Locate invoice line item and due date for {company_name}",
+                    "requires_human_approval": False,
+                },
+                {
+                    "step_number": 3,
+                    "description": "Navigate to CorpFlow Internal Submissions Ledger",
+                    "tool": "browser",
+                    "action": "navigate",
+                    "params": {"url": "http://localhost:5001/internal/submissions"},
+                    "expected_outcome": "Internal Submissions page loads",
+                    "requires_human_approval": False,
+                },
+                {
+                    "step_number": 4,
+                    "description": f"Verify whether transaction for {company_name} is recorded in Submissions Ledger",
+                    "tool": "browser",
+                    "action": "get_page_content",
+                    "params": {"selector": "#submissions-table"},
+                    "expected_outcome": "Verified transaction record in the ledger table",
+                    "requires_human_approval": False,
+                },
+            ]
+            return {
+                "understanding": f"Audit verification task: Check {company_name} invoice status in catalog and verify its presence in the Internal Submissions Ledger.",
+                "steps": steps,
+            }
+
+        # Branch C: Single Invoice Data Entry Workflow (e.g. Acme Corp)
         steps = [
             {
                 "step_number": 1,

@@ -89,6 +89,80 @@ class ResultObserver:
         elif "#submissions-table" in selector or "submissions" in str(params.get("url", "")):
             extracted["ledger_verified"] = True
 
+        # Parse invoice catalog table if retrieved
+        if ("#invoice-table" in selector or "invoices" in selector or "INV-2026" in output_str) and output_str:
+            inv_matches = list(re.finditer(r'(INV-\d{4}-\d{3})', output_str))
+            if inv_matches:
+                invoices = []
+                for i, match in enumerate(inv_matches):
+                    inv_num = match.group(1)
+                    start_p = inv_matches[i-1].end() if i > 0 else 0
+                    pre_text = output_str[start_p:match.start()].strip()
+                    pre_lines = [line.strip() for line in pre_text.split('\n') if line.strip()]
+
+                    company = "Unknown"
+                    valid_lines = [
+                        l for l in pre_lines
+                        if not any(h in l.upper() for h in ["COMPANY", "INVOICE #", "ACTIONS", "DUE DATE", "STATUS", "VIEW DETAILS"])
+                    ]
+                    if len(valid_lines) >= 2:
+                        company = valid_lines[-2]
+                    elif len(valid_lines) == 1:
+                        company = valid_lines[-1]
+
+                    end_p = inv_matches[i+1].start() if i + 1 < len(inv_matches) else len(output_str)
+                    post_text = output_str[match.end():end_p]
+
+                    amt_match = re.search(r'([$₹€£]?\s*[\d,]+\.\d{2})', post_text)
+                    raw_amt = amt_match.group(1) if amt_match else "0.00"
+                    clean_amt = re.sub(r'[^\d.]', '', raw_amt)
+
+                    curr_match = re.search(r'\b(USD|INR|EUR|GBP)\b', post_text)
+                    currency = curr_match.group(1) if curr_match else ("INR" if "₹" in post_text else "USD")
+
+                    date_match = re.search(r'(\d{4}-\d{2}-\d{2})', post_text)
+                    due_date = date_match.group(1) if date_match else ""
+
+                    status_match = re.search(r'\b(Overdue|Pending|Paid)\b', post_text, re.IGNORECASE)
+                    status = status_match.group(1).capitalize() if status_match else "Unknown"
+
+                    invoices.append({
+                        "company_name": company,
+                        "invoice_number": inv_num,
+                        "amount": clean_amt,
+                        "currency": currency,
+                        "due_date": due_date,
+                        "status": status,
+                    })
+
+                extracted["invoices"] = invoices
+                overdue = [inv for inv in invoices if inv["status"].lower() == "overdue"]
+                extracted["overdue_invoices"] = overdue
+                extracted["total_invoices_found"] = len(invoices)
+                extracted["overdue_count"] = len(overdue)
+
+                if len(invoices) == 1:
+                    extracted["company_name"] = invoices[0]["company_name"]
+                    extracted["invoice_number"] = invoices[0]["invoice_number"]
+                    extracted["amount"] = invoices[0]["amount"]
+                    extracted["currency"] = invoices[0]["currency"]
+                    extracted["due_date"] = invoices[0]["due_date"]
+                    extracted["status"] = invoices[0]["status"]
+
+                # Detailed observation text
+                if overdue and "overdue" in goal.lower():
+                    overdue_lines = [
+                        f"{inv['invoice_number']} | {inv['company_name']} | {inv['amount']} {inv['currency']} | Due: {inv['due_date']} | Status: {inv['status']}"
+                        for inv in overdue
+                    ]
+                    output_str = f"Extracted {len(overdue)} Overdue Invoices:\n" + "\n".join(f"• {l}" for l in overdue_lines)
+                else:
+                    inv_lines = [
+                        f"{inv['invoice_number']} | {inv['company_name']} | {inv['amount']} {inv['currency']} | Due: {inv['due_date']} | Status: {inv['status']}"
+                        for inv in invoices
+                    ]
+                    output_str = f"Extracted {len(invoices)} Invoices:\n" + "\n".join(f"• {l}" for l in inv_lines)
+
         # Regex fallback on raw page content
         if action in ("get_page_content", "content") and output_str:
             sub_match = re.search(r'(SUB-\d+)', output_str)

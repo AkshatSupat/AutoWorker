@@ -599,19 +599,62 @@
       </div>
     ` : '';
 
-    // Extracted Data Pill Tags
+    // Extracted Data Pill Tags & Table
     let extractedPillsHtml = '';
     if (step.extractedData && typeof step.extractedData === 'object' && Object.keys(step.extractedData).length > 0) {
-      const pills = Object.entries(step.extractedData).map(([k, v]) => {
-        const valStr = typeof v === 'object' ? JSON.stringify(v) : String(v);
-        return `<span style="background:rgba(255,255,255,0.06); padding:2px 7px; border-radius:4px; border:1px solid var(--border-subtle); font-family:var(--font-mono); font-size:11px;">
-          <strong style="color:var(--accent-purple);">${escapeHtml(k)}:</strong> ${escapeHtml(valStr)}
-        </span>`;
-      }).join(' ');
+      const invList = step.extractedData.overdue_invoices || step.extractedData.invoices;
+      let invoiceTableHtml = '';
+      if (Array.isArray(invList) && invList.length > 0) {
+        const rows = invList.map((inv) => `
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+            <td style="padding:6px 8px; font-family:var(--font-mono); color:var(--info); font-weight:600;">${escapeHtml(inv.invoice_number || '')}</td>
+            <td style="padding:6px 8px; color:#ffffff; font-weight:500;">${escapeHtml(inv.company_name || '')}</td>
+            <td style="padding:6px 8px; color:var(--success); font-weight:600;">${escapeHtml(inv.amount || '')} ${escapeHtml(inv.currency || '')}</td>
+            <td style="padding:6px 8px;">
+              <span style="background:rgba(245,158,11,0.15); color:var(--warning); padding:2px 6px; border-radius:4px; font-weight:600; font-family:var(--font-mono); font-size:11px;">
+                📅 ${escapeHtml(inv.due_date || 'N/A')}
+              </span>
+            </td>
+            <td style="padding:6px 8px;">
+              <span class="badge-status ${String(inv.status).toLowerCase() === 'overdue' ? 'failed' : 'completed'}" style="font-size:10px; padding:2px 6px;">
+                ${escapeHtml(inv.status || 'Active')}
+              </span>
+            </td>
+          </tr>
+        `).join('');
+
+        invoiceTableHtml = `
+          <div style="margin-top:8px; overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; font-size:12px; background:rgba(0,0,0,0.25); border-radius:6px; overflow:hidden; border:1px solid rgba(255,255,255,0.08);">
+              <thead>
+                <tr style="background:rgba(255,255,255,0.06); text-align:left; color:#94a3b8; font-size:11px; text-transform:uppercase;">
+                  <th style="padding:6px 8px;">Invoice #</th>
+                  <th style="padding:6px 8px;">Company</th>
+                  <th style="padding:6px 8px;">Amount</th>
+                  <th style="padding:6px 8px;">Payment Due Date</th>
+                  <th style="padding:6px 8px;">Status</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      const pills = Object.entries(step.extractedData)
+        .filter(([k]) => k !== 'invoices' && k !== 'overdue_invoices')
+        .map(([k, v]) => {
+          const valStr = typeof v === 'object' ? JSON.stringify(v) : String(v);
+          return `<span style="background:rgba(255,255,255,0.06); padding:2px 7px; border-radius:4px; border:1px solid var(--border-subtle); font-family:var(--font-mono); font-size:11px;">
+            <strong style="color:var(--accent-purple);">${escapeHtml(k)}:</strong> ${escapeHtml(valStr)}
+          </span>`;
+        }).join(' ');
+
       extractedPillsHtml = `
         <div class="diag-row">
-          <span class="diag-label">Extracted Entities &amp; Context</span>
-          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:2px;">${pills}</div>
+          <span class="diag-label">Extracted Entities &amp; Line Items</span>
+          ${pills ? `<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:2px;">${pills}</div>` : ''}
+          ${invoiceTableHtml}
         </div>
       `;
     }

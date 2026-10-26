@@ -40,6 +40,16 @@ SCREENSHOT_PATH.mkdir(parents=True, exist_ok=True)
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 STATIC_DIR.mkdir(parents=True, exist_ok=True)
 
+def normalize_screenshot_path(p: Optional[str]) -> Optional[str]:
+    if not p:
+        return None
+    p_str = str(p).replace("\\", "/")
+    if "screenshots/" in p_str:
+        return "/screenshots/" + p_str.split("screenshots/")[-1]
+    if not p_str.startswith("/") and not p_str.startswith("http"):
+        return "/" + p_str
+    return p_str
+
 app = FastAPI(
     title="AutoWorker - Autonomous AI Task Worker",
     description="Enterprise SaaS Dashboard for AutoWorker (CentrAlign AI Evaluation)",
@@ -774,16 +784,6 @@ async def run_live_agent(task_id: str, goal: str):
                         "expected_outcome": st.get("expected_outcome"),
                         "retries_left": data.get("retries_left"),
                     })
-def normalize_screenshot_path(p: Optional[str]) -> Optional[str]:
-    if not p:
-        return None
-    p_str = str(p).replace("\\", "/")
-    if "screenshots/" in p_str:
-        return "/screenshots/" + p_str.split("screenshots/")[-1]
-    if not p_str.startswith("/") and not p_str.startswith("http"):
-        return "/" + p_str
-    return p_str
-
                 elif event_type == "step_finished":
                     st = data.get("step", {})
                     obs = data.get("observation", {})
